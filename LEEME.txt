@@ -1,0 +1,109 @@
+03-VIDEO_MAKING
+===============
+
+Herramientas para armar videos (audio -> mp4 + miniatura). Es la caja de
+herramientas: no se guarda nada de ningún video acá.
+
+
+ESTRUCTURA
+----------
+
+03-VIDEO_MAKING\
+  crear_video.bat      <- lanzadores (llaman a los scripts)
+  miniatura.bat
+  scripts\             crear_video.py, fondo.py, miniatura.py
+  fondos\              noche_limpio.png, dia_limpio.png   (fondos de Canva SIN texto)
+  foto\                avatar_circulo.png
+  fuentes\             Cardo, Aileron y Raleway
+  music\               música de fondo (meditacion_loop.py y los .wav)
+  LEEME.txt
+
+Los scripts encuentran fondos\, foto\ y fuentes\ solos por su ubicación; no
+hace falta pasar rutas.
+
+
+UNA SOLA VEZ
+------------
+
+1. pip install pillow auto-editor   (y ffmpeg en el PATH).
+2. Dejá en fondos\ los PNG sin texto exportados de Canva.
+3. Para escribir crear_video desde cualquier lado, agregá esta carpeta al
+   PATH de Windows (o llamá con la ruta completa).
+
+
+EN CADA VIDEO (dentro de la carpeta del proyecto)
+-------------------------------------------------
+
+En 01-PROJECTS\AAAA_MM_DD-slug\ dejá audio.mp3, abrí una terminal ahí y corré:
+
+  D:\Videos\03-VIDEO_MAKING\crear_video.bat audio.mp3 --modo meditacion --titulo "Sentir sin cambiar nada" --palabra "CALMA"
+
+  D:\Videos\03-VIDEO_MAKING\crear_video.bat audio.mp3 --modo charla --titulo "Por qué nos cuesta soltar|el control" --subtitulo "Charla sobre incertidumbre" --palabra "Soltar el control"
+
+Con --titulo el script dibuja el fondo (título, subtítulo y marca "meditawork")
+y lo guarda como fondo.png en la carpeta. Sin --titulo usa un fondo.png que ya
+esté ahí.
+
+Sale en listo\: AAAA_MM_DD-slug.mp4 (lleva el nombre de la carpeta, con la
+fecha) y miniatura.jpg.
+Si corrés el script en una carpeta que no tiene nombre de proyecto, los
+archivos se llaman <audio>_video.mp4 y <audio>_miniatura.jpg.
+
+Para dejar los resultados directamente en tus carpetas de salida, usá
+--salida, por ejemplo: --salida ..\..\02-EDITS
+
+
+MODOS
+-----
+
+* meditacion: estilo noche. NO corta silencios (se usa el audio tal cual de
+  Audacity). Subtítulo por defecto: "Meditación guiada". La foto aparece al
+  principio y cerca del final.
+* charla: estilo día. Corta silencios con auto-editor (--margin 0.2sec).
+  Sin subtítulo salvo que lo pongas. La foto aparece al principio y cada
+  2 minutos.
+
+
+FONDO
+-----
+
+--titulo "Texto"                 Título. Con | forzás el salto de línea; si es
+                                 largo se parte solo en 2 líneas
+--subtitulo "Texto"              Cambia o agrega el subtítulo
+--estilo noche|dia               Cambiar el estilo (default según el modo)
+--fuente-subtitulo aileron|cardo Fuente del subtítulo (default: aileron)
+--sombra                         Sombra suave para dar contraste
+
+Solo el fondo, sin video:
+
+  D:\Videos\03-VIDEO_MAKING\scripts\fondo.py "Mi título" --estilo dia
+
+
+OPCIONES ÚTILES
+---------------
+
+--fondo OTRO.png                 Usar otro fondo en vez de generarlo
+--fondo-miniatura X.png          Fondo sin texto para la miniatura (default: el de
+                                 fondos\ según el estilo)
+--con-cortes / --sin-cortes      Cortar silencios en meditación / no cortarlos en charla
+--mantener 1:25-1:40             Dejar esa pausa sin cortar (se puede repetir)
+--sin-foto                       Sin foto ni "Voz: Fede"
+--foto-inicio 3                  Cuándo aparece la foto
+--foto-dur 6                     Cuánto dura la foto
+--foto-cada 120                  Cada cuánto se repite la foto
+--texto-foto "Voz: Fede"         Cambiar el texto
+--zoom 0.08                      Zoom máximo del fondo (0 = quieto)
+--nombre X                       Forzar el nombre de los archivos de salida
+--calidad 20                     Calidad del video (menor = mejor y más pesado)
+
+
+MINIATURA SOLA
+--------------
+
+  D:\Videos\03-VIDEO_MAKING\miniatura.bat D:\Videos\03-VIDEO_MAKING\fondos\noche_limpio.png "CALMA" --mayusculas
+
+  D:\Videos\03-VIDEO_MAKING\miniatura.bat D:\Videos\03-VIDEO_MAKING\fondos\noche_limpio.png "Respirá|y soltá"
+
+Se guarda en .\listo\miniatura-<palabras>.png. Acepta varias palabras: se
+reparten solas en hasta 3 líneas; con | forzás el salto. Conviene no pasar de
+3 o 4 palabras.

@@ -1,0 +1,159 @@
+
+////////////////////////////////////
+// COMO USAR AUTO-EDITOR
+////////////////////////////////////
+
+// para videos hablando (0.3 o 0.2)
+auto-editor PXL_20260610_075650095-Observacion.mp4  --margin 0.3sec --export kdenlive
+
+// para videos hablando, volumen bajo del mic Samson
+auto-editor video.mp4  --margin 0.3sec --edit audio:0.01 --export kdenlive 
+
+// para brolls, acortar según movimiento 20%
+auto-editor --edit motion:threshold=0.2 --export kdenlive
+
+// concatenar videos
+ffmpeg -f concat -safe 0 -i lista.txt -c copy full.mp4
+
+////////////////////////////////////
+////////////////////////////////////
+
+Before doing the real editing, you first cut out the "dead space" which is typically silence. This is known as a "first pass". Cutting these is a boring task, especially if the video is very long.
+
+auto-editor path/to/your/video.mp4
+
+/////////////
+
+Change the pace of the edited video by using --margin.
+
+--margin adds in some "silent" sections to make the editing feel nicer.
+
+# Add 0.2 seconds of padding before and after to make the edit nicer.
+# `0.2s` is the default value for `--margin`
+auto-editor example.mp4 --margin 0.2sec
+
+# Add 0.3 seconds of padding before, 1.5 seconds after
+auto-editor example.mp4 --margin 0.3s,1.5sec
+
+/////////////
+
+Methods for Making Automatic Cuts
+
+The --edit option is how auto-editor makes automated cuts.
+
+For example, edit out motionlessness in a video by setting --edit motion.
+
+# cut out sections where the total motion is less than 2%.
+auto-editor example.mp4 --edit motion:threshold=0.02
+
+# `--edit audio:threshold=0.04,stream=all` is used by defaut.
+auto-editor example.mp4
+
+# Different tracks can be set with different attribute.
+auto-editor multi-track.mov --edit "(or audio:stream=0 audio:threshold=10%,stream=1)"
+
+
+Different editing methods can be used together.
+
+# 'threshold' is always the first argument for edit-method objects
+auto-editor example.mp4 --edit "(or audio:0.03 motion:0.06)"
+
+You can also use dB unit, a volume unit familiar to video-editors (case sensitive):
+
+auto-editor example.mp4 --edit audio:-19dB
+auto-editor example.mp4 --edit audio:-7dB
+auto-editor example.mp4 --edit motion:-19dB
+
+
+/////////////
+
+See What Auto-Editor Cuts Out
+
+To export what auto-editor normally cuts out. Set --video-speed to 99999 and --silent-speed to 1. This is the reverse of the usual default values.
+
+auto-editor example.mp4 --video-speed 99999 --silent-speed 1
+
+
+/////////////
+Exporting to Editors
+
+Create an XML file that can be imported to Adobe Premiere Pro using this command:
+
+auto-editor example.mp4 --export premiere
+
+Auto-Editor can also export to:
+
+    DaVinci Resolve with --export resolve
+    Final Cut Pro with --export final-cut-pro
+    ShotCut with --export shotcut
+    Kdenlive with --export kdenlive
+    Individual media clips with --export clip-sequence
+
+/////////////
+Split by Clip
+
+If you want to split the clips, but don't want auto-editor to do any more editing. There's a simple command.
+
+auto-editor example.mp4 --silent-speed 1 --video-speed 1 --export premiere
+
+/////////////
+
+
+Manual Editing
+
+Use the --cut-out option to always remove a section.
+
+# Cut out the first 30 seconds.
+auto-editor example.mp4 --cut-out 0,30sec
+
+# Cut out the first 30 frames.
+auto-editor example.mp4 --cut-out 0,30
+
+# Always leave in the first 30 seconds.
+auto-editor example.mp4 --add-in 0,30sec
+
+# Cut out the last 10 seconds.
+auto-editor example.mp4 --cut-out -10sec,end
+
+# You can do multiple at once.
+auto-editor example.mp4 --cut-out 0,10 15sec,20sec
+auto-editor example.mp4 --add-in 30sec,40sec 120,150sec
+
+And of course, you can use any --edit configuration.
+
+If you don't want any automatic cuts, you can use --edit none or --edit all/e
+
+# Cut out the first 5 seconds, leave the rest untouched.
+auto-editor example.mp4 --edit none --cut-out 0,5sec
+
+# Leave in the first 5 seconds, cut everything else out.
+auto-editor example.mp4 --edit all/e --add-in 0,5sec
+
+
+/////////////
+¡Exacto! Si la config normal ya te funciona bien, no toques nada.
+Pero te explico para qué sirve el --edit y threshold por si algún día lo necesitas:
+¿Para qué sirve threshold?
+Controla qué tan sensible es para detectar "silencio".
+
+Threshold bajo (ej: 2%) → Detecta hasta respiraciones como "sonido", corta menos
+Threshold alto (ej: 6%) → Solo detecta voz clara, corta más agresivo
+
+Casos donde SÍ te serviría ajustarlo:
+1. Grabaste en lugar ruidoso
+
+
+
+
+////////////////////////////////////
+// TRANSCODEAR VFR TO CONSTANT
+////////////////////////////////////
+Usar este
+ffmpeg -i PXL_20260506_051715043.mp4 -c:v libx264 -crf 17 -preset superfast -r 30 -c:a aac cfr-PXL_20260506_051715043.mp4
+
+chequear este lap rox
+ffmpeg -i PXL_20260127_111636021.mp4 -c:v libx264 -crf 15 -preset superfast -r 30 -c:a copy salida.mp4
+
+GEMINI
+ffmpeg -i PXL_20260125_050031542.mp4 -c:v prores_ks -profile:v 3 -r 30 -c:a pcm_s16le PXL_20260125_050031542.mov
+

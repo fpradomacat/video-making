@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# Audio de música de fondo (muy pesado para GitHub)
+*.wav
