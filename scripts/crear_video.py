@@ -21,6 +21,9 @@ Ejemplos:
   python crear_video.py audio.mp3 --modo meditacion --palabra "CALMA"
   python crear_video.py charla.mp3 --modo charla --palabra "ENFOQUE"
   python crear_video.py audio.mp3 --modo meditacion --fondo otro.png --sin-foto
+  python D:\Videos\03-VIDEO_MAKING\scripts\crear_video.py audio.wav --modo charla --titulo "Mitos de la meditación" --subtitulo "Cómo empezar sin complicarte"
+  python D:\Videos\03-VIDEO_MAKING\scripts\crear_video.py audio.wav --modo meditacion --titulo "Dejar sentir" --subtitulo "Meditación guiada"
+
 """
 import argparse
 import re
